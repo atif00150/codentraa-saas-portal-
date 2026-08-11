@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Lock, Mail, User, Building2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { registerUser } from "@/lib/api";
+import Logo from "@/components/ui/Logo";
+import AuthIllustration from "@/components/ui/AuthIllustration";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -44,131 +46,122 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-indigo-600/15 blur-[140px] rounded-full pointer-events-none"></div>
-
-      <div className="w-full max-w-lg bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl relative z-10 space-y-6">
-        {/* Figma Brand Header */}
-        <div className="flex items-center space-x-3 mb-2">
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
-            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-              <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L18.6 8 12 11.2 5.4 8 12 4.8zM4 9.6l7 3.5v7l-7-3.5v-7zm16 7l-7 3.5v-7l7-3.5v7z" />
-            </svg>
+    <div className="min-h-screen bg-[#F0F4FF] flex items-center justify-center p-4 md:p-8 font-sans antialiased">
+      <div className="w-full max-w-5xl bg-white rounded-3xl border border-slate-200/80 shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+        
+        {/* Left Column: Form */}
+        <div className="p-8 md:p-12 flex flex-col justify-between space-y-6 bg-white">
+          <div className="mb-2">
+            <Logo size="md" variant="light" />
           </div>
-          <span className="font-extrabold text-2xl text-white tracking-tight">Codentra</span>
-        </div>
 
-        <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Create Organization Account</h1>
-          <p className="text-xs text-slate-400 mt-1">Launch your multi-tenant Codentra portal in seconds</p>
-        </div>
-
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/30 p-3.5 rounded-xl flex items-center space-x-3 text-red-400 text-xs">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {success && (
-          <div className="bg-emerald-500/10 border border-emerald-500/30 p-3.5 rounded-xl flex items-center space-x-3 text-emerald-400 text-xs">
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
-            <span>Workspace Created! Redirecting to Dashboard...</span>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-6">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">First Name</label>
-              <div className="relative">
-                <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Create Account</h1>
+              <p className="text-xs text-slate-400 font-medium mt-1">Launch your Codentra portal workspace</p>
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 p-3.5 rounded-xl flex items-center space-x-3 text-red-600 text-xs">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {success && (
+              <div className="bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl flex items-center space-x-3 text-emerald-700 text-xs">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>Workspace Created! Redirecting...</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 mb-1">First Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Atif"
+                    className="w-full bg-slate-50/60 border border-slate-200 text-xs text-slate-900 rounded-xl px-3.5 py-2.5 placeholder:text-slate-400 focus:outline-none focus:border-[#6366F1] focus:bg-white transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 mb-1">Last Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Mughal"
+                    className="w-full bg-slate-50/60 border border-slate-200 text-xs text-slate-900 rounded-xl px-3.5 py-2.5 placeholder:text-slate-400 focus:outline-none focus:border-[#6366F1] focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-800 mb-1">Organization Name</label>
                 <input
                   type="text"
                   required
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="Atif"
-                  className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
+                  value={organizationName}
+                  onChange={(e) => setOrganizationName(e.target.value)}
+                  placeholder="Codentra Agency"
+                  className="w-full bg-slate-50/60 border border-slate-200 text-xs text-slate-900 rounded-xl px-3.5 py-2.5 placeholder:text-slate-400 focus:outline-none focus:border-[#6366F1] focus:bg-white transition-all"
                 />
               </div>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Last Name</label>
-              <input
-                type="text"
-                required
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Mughal"
-                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
-              />
-            </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-800 mb-1">Work Email</label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="atif@codentra.com"
+                  className="w-full bg-slate-50/60 border border-slate-200 text-xs text-slate-900 rounded-xl px-3.5 py-2.5 placeholder:text-slate-400 focus:outline-none focus:border-[#6366F1] focus:bg-white transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-800 mb-1">Password</label>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter password"
+                  className="w-full bg-slate-50/60 border border-slate-200 text-xs text-slate-900 rounded-xl px-3.5 py-2.5 placeholder:text-slate-400 focus:outline-none focus:border-[#6366F1] focus:bg-white transition-all"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#6366F1] hover:bg-[#4F46E5] text-white font-bold py-3 rounded-xl shadow-md shadow-indigo-500/25 text-xs transition-all disabled:opacity-50 mt-2"
+              >
+                {loading ? "Creating Account..." : "Sign Up"}
+              </button>
+            </form>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Organization / Agency Name</label>
-            <div className="relative">
-              <Building2 className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                required
-                value={organizationName}
-                onChange={(e) => setOrganizationName(e.target.value)}
-                placeholder="Acme Digital Agency"
-                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
-              />
-            </div>
+          <div className="text-center pt-2">
+            <p className="text-xs text-slate-400 font-medium">
+              Already have an account?{" "}
+              <Link href="/login" className="text-[#6366F1] font-bold hover:underline">
+                Sign in
+              </Link>
+            </p>
           </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Work Email</label>
-            <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="atif@acme.com"
-                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Password</label>
-            <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-600/30 text-sm flex items-center justify-center space-x-2 transition-all disabled:opacity-50 mt-2"
-          >
-            <span>{loading ? "Creating Account..." : "Create Account"}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </form>
-
-        <div className="text-center pt-2">
-          <p className="text-xs text-slate-400">
-            Already have an account?{" "}
-            <Link href="/login" className="text-indigo-400 font-semibold hover:underline">
-              Sign In
-            </Link>
-          </p>
         </div>
+
+        {/* Right Column: Illustration */}
+        <div className="hidden md:block">
+          <AuthIllustration />
+        </div>
+
       </div>
     </div>
   );

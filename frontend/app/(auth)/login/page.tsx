@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Layers, ArrowRight, Lock, Mail, AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { Lock, Mail, AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { loginUser } from "@/lib/api";
 
 export default function LoginPage() {
@@ -37,17 +37,24 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Ambient Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/15 blur-[140px] rounded-full pointer-events-none"></div>
 
-      <div className="w-full max-w-md bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl relative z-10 space-y-6">
-        {/* Brand Header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex bg-blue-600/20 p-3 rounded-2xl border border-blue-500/30 text-blue-400 mb-2">
-            <Layers className="w-8 h-8" />
+      <div className="w-full max-w-md bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl relative z-10 space-y-6">
+        {/* Figma Brand Header: Hexagon Icon + "Codentra" */}
+        <div className="flex items-center space-x-3 mb-2">
+          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+              <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L18.6 8 12 11.2 5.4 8 12 4.8zM4 9.6l7 3.5v7l-7-3.5v-7zm16 7l-7 3.5v-7l7-3.5v7z" />
+            </svg>
           </div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">CODENTRAA</h1>
-          <p className="text-sm text-slate-400">Sign in to access your enterprise workspace</p>
+          <span className="font-extrabold text-2xl text-white tracking-tight">Codentra</span>
+        </div>
+
+        <div>
+          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+            Welcome Back! <span className="animate-bounce">👋</span>
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">Please sign in to your account</p>
         </div>
 
         {error && (
@@ -66,7 +73,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Work Email</label>
+            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Email</label>
             <div className="relative">
               <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
@@ -74,8 +81,8 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@company.com"
-                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                placeholder="Enter your email"
+                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
               />
             </div>
           </div>
@@ -83,7 +90,7 @@ export default function LoginPage() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Password</label>
-              <Link href="/forgot-password" className="text-xs text-blue-400 font-semibold hover:underline">
+              <Link href="/forgot-password" className="text-xs text-indigo-400 font-semibold hover:underline">
                 Forgot password?
               </Link>
             </div>
@@ -94,8 +101,8 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-12 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                placeholder="Enter your password"
+                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-12 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
               />
               <button
                 type="button"
@@ -110,18 +117,17 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-600/25 flex items-center justify-center space-x-2 transition-colors disabled:opacity-50"
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-600/30 text-sm transition-all disabled:opacity-50 mt-2"
           >
-            <span>{loading ? "Signing in..." : "Sign In to Workspace"}</span>
-            <ArrowRight className="w-4 h-4" />
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
         <div className="text-center pt-2">
           <p className="text-xs text-slate-400">
-            Don't have a workspace yet?{" "}
-            <Link href="/register" className="text-blue-400 font-semibold hover:underline">
-              Create New Organization
+            Don't have an account?{" "}
+            <Link href="/register" className="text-indigo-400 font-semibold hover:underline">
+              Sign up
             </Link>
           </p>
         </div>

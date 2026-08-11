@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Layers, ArrowRight, Lock, Mail, User, Building2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Lock, Mail, User, Building2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { registerUser } from "@/lib/api";
 
 export default function RegisterPage() {
@@ -45,15 +45,22 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-600/10 blur-[140px] rounded-full pointer-events-none"></div>
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-indigo-600/15 blur-[140px] rounded-full pointer-events-none"></div>
 
-      <div className="w-full max-w-lg bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl relative z-10 space-y-6">
-        <div className="text-center space-y-2">
-          <div className="inline-flex bg-blue-600/20 p-3 rounded-2xl border border-blue-500/30 text-blue-400 mb-2">
-            <Layers className="w-8 h-8" />
+      <div className="w-full max-w-lg bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl relative z-10 space-y-6">
+        {/* Figma Brand Header */}
+        <div className="flex items-center space-x-3 mb-2">
+          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+              <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L18.6 8 12 11.2 5.4 8 12 4.8zM4 9.6l7 3.5v7l-7-3.5v-7zm16 7l-7 3.5v-7l7-3.5v7z" />
+            </svg>
           </div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Create Organization Workspace</h1>
-          <p className="text-sm text-slate-400">Launch your multi-tenant agency portal in seconds</p>
+          <span className="font-extrabold text-2xl text-white tracking-tight">Codentra</span>
+        </div>
+
+        <div>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Create Organization Account</h1>
+          <p className="text-xs text-slate-400 mt-1">Launch your multi-tenant Codentra portal in seconds</p>
         </div>
 
         {error && (
@@ -82,7 +89,7 @@ export default function RegisterPage() {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="Atif"
-                  className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
                 />
               </div>
             </div>
@@ -94,7 +101,7 @@ export default function RegisterPage() {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="Mughal"
-                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
               />
             </div>
           </div>
@@ -109,7 +116,7 @@ export default function RegisterPage() {
                 value={organizationName}
                 onChange={(e) => setOrganizationName(e.target.value)}
                 placeholder="Acme Digital Agency"
-                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
               />
             </div>
           </div>
@@ -124,7 +131,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="atif@acme.com"
-                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
               />
             </div>
           </div>
@@ -139,7 +146,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition-colors"
               />
             </div>
           </div>
@@ -147,17 +154,17 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-600/25 flex items-center justify-center space-x-2 transition-colors disabled:opacity-50"
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-600/30 text-sm flex items-center justify-center space-x-2 transition-all disabled:opacity-50 mt-2"
           >
-            <span>{loading ? "Creating Workspace..." : "Create Workspace & Account"}</span>
+            <span>{loading ? "Creating Account..." : "Create Account"}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
         <div className="text-center pt-2">
           <p className="text-xs text-slate-400">
-            Already have a workspace?{" "}
-            <Link href="/login" className="text-blue-400 font-semibold hover:underline">
+            Already have an account?{" "}
+            <Link href="/login" className="text-indigo-400 font-semibold hover:underline">
               Sign In
             </Link>
           </p>

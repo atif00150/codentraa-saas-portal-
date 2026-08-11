@@ -7,32 +7,26 @@ interface LogoProps {
 }
 
 export default function Logo({ size = "md", variant = "dark", showText = true }: LogoProps) {
-  const iconSizes = {
-    sm: "w-8 h-8",
-    md: "w-10 h-10",
-    lg: "w-12 h-12",
-  };
-
   const textSizes = {
     sm: "text-lg",
-    md: "text-xl",
-    lg: "text-2xl",
+    md: "text-2xl",
+    lg: "text-3xl",
   };
 
   return (
-    <div className="flex items-center space-x-3 select-none">
-      {/* 100% Transparent PNG Logo Image */}
-      <div className={`${iconSizes[size]} shrink-0 flex items-center justify-center`}>
+    <div className="inline-flex items-center gap-1 select-none">
+      {/* Tight Trimmed Logo PNG Icon Right Next to Codentra Text */}
+      <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 flex items-center justify-center">
         <img
           src="/logo.png"
           alt="Codentra Logo"
-          className={`w-full h-full object-contain ${variant === "dark" ? "brightness-200 invert" : ""}`}
+          className="w-full h-full object-contain block"
         />
       </div>
 
-      {/* Bold Typographic Brand Name: "Codentra" */}
+      {/* Codentra Text */}
       {showText && (
-        <span className={`font-extrabold tracking-tight ${textSizes[size]} ${variant === "dark" ? "text-white" : "text-slate-900"}`}>
+        <span className={`font-black tracking-tight leading-none ${textSizes[size]} ${variant === "dark" ? "text-white" : "text-slate-900"}`}>
           Codentra
         </span>
       )}

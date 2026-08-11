@@ -4,12 +4,29 @@ import { useState } from "react";
 import Link from "next/link";
 import { FolderKanban, CheckSquare, Users, TrendingUp, ArrowUpRight, ArrowRight, MoreVertical, Calendar as CalendarIcon, Globe, Smartphone, Cpu, Megaphone, ChevronDown, ChevronLeft, ChevronRight, X, Check } from "lucide-react";
 
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+// Generate years from 2000 up to 2050 (Future-ready)
+const YEARS_RANGE = Array.from({ length: 51 }, (_, i) => 2000 + i);
+
 export default function DashboardPage() {
+  const today = new Date();
   const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedRange, setSelectedRange] = useState("May 20 – May 26, 2024");
+  
+  // Real Dynamic Calendar State (Default to current real date: Aug 2026)
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [startDay, setStartDay] = useState(1);
+  const [endDay, setEndDay] = useState(7);
   const [activePreset, setActivePreset] = useState("This Week");
-  const [startDay, setStartDay] = useState(20);
-  const [endDay, setEndDay] = useState(26);
+
+  // Selected Range Display Text
+  const [selectedRangeText, setSelectedRangeText] = useState(
+    `${MONTH_NAMES[today.getMonth()].slice(0, 3)} 1 – ${MONTH_NAMES[today.getMonth()].slice(0, 3)} 7, ${today.getFullYear()}`
+  );
 
   const myTasks = [
     { id: "t1", title: "Design landing page", project: "Website Redesign", status: "In Progress", statusColor: "bg-[#EEF2FF] text-[#6366F1]", dotColor: "bg-[#6366F1]" },
@@ -32,6 +49,40 @@ export default function DashboardPage() {
     { id: "a4", user: "Uman Tariq", action: "created a new task", time: "2h ago", avatar: "UT", bg: "bg-amber-100 text-amber-700" },
   ];
 
+  // Dynamic Date Calculation Utilities
+  const getDaysInMonth = (year: number, month: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOffset = (year: number, month: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const totalDays = getDaysInMonth(currentYear, currentMonth);
+  const firstDayOffset = getFirstDayOffset(currentYear, currentMonth);
+
+  const handlePrevMonth = () => {
+    if (currentMonth === 0) {
+      if (currentYear > 2000) {
+        setCurrentMonth(11);
+        setCurrentYear(currentYear - 1);
+      }
+    } else {
+      setCurrentMonth(currentMonth - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (currentMonth === 11) {
+      if (currentYear < 2050) {
+        setCurrentMonth(0);
+        setCurrentYear(currentYear + 1);
+      }
+    } else {
+      setCurrentMonth(currentMonth + 1);
+    }
+  };
+
   const handleSelectDay = (day: number) => {
     if (day < startDay || (startDay !== endDay && day > endDay)) {
       setStartDay(day);
@@ -42,11 +93,10 @@ export default function DashboardPage() {
   };
 
   const handleApplyRange = () => {
-    setSelectedRange(`May ${startDay} – May ${endDay}, 2024`);
+    const monthShort = MONTH_NAMES[currentMonth].slice(0, 3);
+    setSelectedRangeText(`${monthShort} ${startDay} – ${monthShort} ${endDay}, ${currentYear}`);
     setShowCalendar(false);
   };
-
-  const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
 
   return (
     <div className="space-y-6 font-sans relative">
@@ -59,7 +109,7 @@ export default function DashboardPage() {
           <p className="text-xs text-slate-500 font-medium mt-1">Here's what's happening with your Codentra projects today.</p>
         </div>
 
-        {/* Interactive Clickable Date Range Picker Button */}
+        {/* Real Dynamic Calendar Picker Button */}
         <div className="relative">
           <button
             onClick={() => setShowCalendar(!showCalendar)}
@@ -68,11 +118,11 @@ export default function DashboardPage() {
             }`}
           >
             <CalendarIcon className="w-4 h-4 text-[#6366F1]" />
-            <span>{selectedRange}</span>
+            <span>{selectedRangeText}</span>
             <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${showCalendar ? "rotate-180 text-[#6366F1]" : ""}`} />
           </button>
 
-          {/* Interactive Calendar Popover Dropdown (Figma Exact Style) */}
+          {/* Real Dynamic Calendar Modal (2000 - 2050+) */}
           {showCalendar && (
             <div className="absolute right-0 top-12 w-80 md:w-96 bg-white border border-slate-200 rounded-3xl shadow-2xl p-5 z-50 animate-in fade-in slide-in-from-top-2 duration-200 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -82,7 +132,7 @@ export default function DashboardPage() {
                 </div>
                 <button
                   onClick={() => setShowCalendar(false)}
-                  className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors"
+                  className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -95,12 +145,16 @@ export default function DashboardPage() {
                     key={preset}
                     onClick={() => {
                       setActivePreset(preset);
-                      if (preset === "Today") { setStartDay(21); setEndDay(21); }
-                      else if (preset === "This Week") { setStartDay(20); setEndDay(26); }
-                      else if (preset === "This Month") { setStartDay(1); setEndDay(31); }
-                      else if (preset === "Last 30 Days") { setStartDay(1); setEndDay(30); }
+                      const curD = today.getDate();
+                      setCurrentMonth(today.getMonth());
+                      setCurrentYear(today.getFullYear());
+
+                      if (preset === "Today") { setStartDay(curD); setEndDay(curD); }
+                      else if (preset === "This Week") { setStartDay(Math.max(1, curD - 3)); setEndDay(Math.min(totalDays, curD + 3)); }
+                      else if (preset === "This Month") { setStartDay(1); setEndDay(totalDays); }
+                      else if (preset === "Last 30 Days") { setStartDay(1); setEndDay(totalDays); }
                     }}
-                    className={`px-3 py-1.5 rounded-xl font-semibold transition-all ${
+                    className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer ${
                       activePreset === preset
                         ? "bg-[#6366F1] text-white shadow-sm"
                         : "bg-slate-50 text-slate-600 hover:bg-slate-100"
@@ -111,26 +165,65 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              {/* Calendar Month Header */}
-              <div className="flex items-center justify-between pt-2">
-                <span className="text-xs font-extrabold text-slate-900">May 2024</span>
+              {/* Month & Year Selectors Header (2000 -> Future 2050+) */}
+              <div className="flex items-center justify-between pt-1">
+                <div className="flex items-center space-x-2">
+                  {/* Month Dropdown */}
+                  <select
+                    value={currentMonth}
+                    onChange={(e) => setCurrentMonth(Number(e.target.value))}
+                    className="bg-slate-50 border border-slate-200 text-xs font-extrabold text-slate-900 rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-[#6366F1] cursor-pointer"
+                  >
+                    {MONTH_NAMES.map((m, idx) => (
+                      <option key={m} value={idx}>{m}</option>
+                    ))}
+                  </select>
+
+                  {/* Year Dropdown (2000 -> 2050) */}
+                  <select
+                    value={currentYear}
+                    onChange={(e) => setCurrentYear(Number(e.target.value))}
+                    className="bg-slate-50 border border-slate-200 text-xs font-extrabold text-slate-900 rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-[#6366F1] cursor-pointer"
+                  >
+                    {YEARS_RANGE.map((y) => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Next / Previous Month Navigation Arrows */}
                 <div className="flex items-center space-x-1">
-                  <button className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+                  <button
+                    onClick={handlePrevMonth}
+                    className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                    title="Previous Month"
+                  >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
-                  <button className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+                  <button
+                    onClick={handleNextMonth}
+                    className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                    title="Next Month"
+                  >
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
-              {/* Calendar Days Grid */}
+              {/* Dynamic Calendar Days Grid */}
               <div className="space-y-1">
                 <div className="grid grid-cols-7 text-center text-[10px] font-bold text-slate-400 uppercase py-1">
                   <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
                 </div>
+                
                 <div className="grid grid-cols-7 gap-1 text-center text-xs">
-                  {daysInMonth.map((day) => {
+                  {/* Empty cells for starting day offset */}
+                  {Array.from({ length: firstDayOffset }).map((_, idx) => (
+                    <div key={`offset-${idx}`} className="h-8"></div>
+                  ))}
+
+                  {/* Real Days of Month */}
+                  {Array.from({ length: totalDays }, (_, i) => i + 1).map((day) => {
                     const isStart = day === startDay;
                     const isEnd = day === endDay;
                     const inRange = day >= startDay && day <= endDay;
@@ -139,7 +232,7 @@ export default function DashboardPage() {
                       <button
                         key={day}
                         onClick={() => handleSelectDay(day)}
-                        className={`h-8 rounded-xl font-bold transition-all text-xs flex items-center justify-center ${
+                        className={`h-8 rounded-xl font-bold transition-all text-xs flex items-center justify-center cursor-pointer ${
                           isStart || isEnd
                             ? "bg-[#6366F1] text-white shadow-md shadow-indigo-500/30"
                             : inRange
@@ -157,18 +250,18 @@ export default function DashboardPage() {
               {/* Action Buttons */}
               <div className="flex items-center justify-between pt-3 border-t border-slate-100">
                 <span className="text-[11px] font-bold text-slate-500">
-                  May {startDay} – May {endDay}
+                  {MONTH_NAMES[currentMonth].slice(0, 3)} {startDay} – {startDay === endDay ? startDay : endDay}, {currentYear}
                 </span>
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => setShowCalendar(false)}
-                    className="px-3 py-1.5 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-colors"
+                    className="px-3 py-1.5 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleApplyRange}
-                    className="px-4 py-1.5 text-xs font-bold bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-xl shadow-md shadow-indigo-500/20 transition-all flex items-center space-x-1"
+                    className="px-4 py-1.5 text-xs font-bold bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-xl shadow-md shadow-indigo-500/20 transition-all flex items-center space-x-1 cursor-pointer"
                   >
                     <Check className="w-3.5 h-3.5" />
                     <span>Apply</span>
@@ -180,7 +273,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 4 Clickable Top KPI Stat Cards (Matching Figma Screenshot) */}
+      {/* 4 Clickable Top KPI Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Projects KPI */}
         <Link href="/projects" className="bg-white border border-slate-100 p-5 rounded-3xl shadow-sm hover:shadow-md hover:border-indigo-100 transition-all group cursor-pointer">
@@ -250,7 +343,6 @@ export default function DashboardPage() {
           <h3 className="text-base font-extrabold text-slate-900">Project Progress</h3>
           
           <div className="flex items-center justify-between my-2 px-2">
-            {/* Donut Chart Ring */}
             <div className="w-36 h-36 rounded-full border-[10px] border-[#6366F1] border-t-emerald-500 border-r-amber-500 border-b-[#818CF8] flex items-center justify-center bg-slate-50/50 shadow-inner">
               <div className="text-center">
                 <span className="text-2xl font-black text-slate-900 block leading-none">75%</span>
@@ -258,7 +350,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Legend Status Breakdown */}
             <div className="space-y-2 text-xs pl-4">
               <div className="flex items-center justify-between gap-6">
                 <span className="text-slate-600 font-medium flex items-center gap-2">

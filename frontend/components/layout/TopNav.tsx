@@ -1,18 +1,25 @@
 "use client";
 
 import { Bell, Search, CheckCircle2 } from "lucide-react";
+import Logo from "@/components/ui/Logo";
 
 export default function TopNav() {
   return (
     <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-10 shadow-sm">
-      {/* Search Bar */}
-      <div className="relative w-80">
-        <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-        <input
-          type="text"
-          placeholder="Search projects, tasks, members..."
-          className="w-full bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:border-[#6366F1] focus:bg-white transition-colors"
-        />
+      {/* Search & Logo Header */}
+      <div className="flex items-center space-x-6">
+        <div className="md:hidden">
+          <Logo size="sm" variant="light" />
+        </div>
+
+        <div className="relative w-72">
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search projects, tasks, members..."
+            className="w-full bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:border-[#6366F1] focus:bg-white transition-colors"
+          />
+        </div>
       </div>
 
       {/* Right Header Status & Profile */}

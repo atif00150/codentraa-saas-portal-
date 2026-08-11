@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Lock, Mail, AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { loginUser } from "@/lib/api";
+import Logo from "@/components/ui/Logo";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,14 +41,9 @@ export default function LoginPage() {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/15 blur-[140px] rounded-full pointer-events-none"></div>
 
       <div className="w-full max-w-md bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl relative z-10 space-y-6">
-        {/* Figma Brand Header: Hexagon Icon + "Codentra" */}
-        <div className="flex items-center space-x-3 mb-2">
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
-            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-              <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L18.6 8 12 11.2 5.4 8 12 4.8zM4 9.6l7 3.5v7l-7-3.5v-7zm16 7l-7 3.5v-7l7-3.5v7z" />
-            </svg>
-          </div>
-          <span className="font-extrabold text-2xl text-white tracking-tight">Codentra</span>
+        {/* Figma Brand Header with Logo */}
+        <div className="mb-2">
+          <Logo size="lg" variant="dark" />
         </div>
 
         <div>

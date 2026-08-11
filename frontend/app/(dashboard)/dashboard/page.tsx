@@ -1,9 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { FolderKanban, CheckSquare, Users, TrendingUp, ArrowUpRight, ArrowRight, MoreVertical, Calendar, Globe, Smartphone, Cpu, Megaphone, ChevronDown } from "lucide-react";
+import { FolderKanban, CheckSquare, Users, TrendingUp, ArrowUpRight, ArrowRight, MoreVertical, Calendar as CalendarIcon, Globe, Smartphone, Cpu, Megaphone, ChevronDown, ChevronLeft, ChevronRight, X, Check } from "lucide-react";
 
 export default function DashboardPage() {
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [selectedRange, setSelectedRange] = useState("May 20 – May 26, 2024");
+  const [activePreset, setActivePreset] = useState("This Week");
+  const [startDay, setStartDay] = useState(20);
+  const [endDay, setEndDay] = useState(26);
+
   const myTasks = [
     { id: "t1", title: "Design landing page", project: "Website Redesign", status: "In Progress", statusColor: "bg-[#EEF2FF] text-[#6366F1]", dotColor: "bg-[#6366F1]" },
     { id: "t2", title: "API integration", project: "Mobile App", status: "To Do", statusColor: "bg-blue-50 text-blue-600", dotColor: "bg-blue-500" },
@@ -25,10 +32,26 @@ export default function DashboardPage() {
     { id: "a4", user: "Uman Tariq", action: "created a new task", time: "2h ago", avatar: "UT", bg: "bg-amber-100 text-amber-700" },
   ];
 
+  const handleSelectDay = (day: number) => {
+    if (day < startDay || (startDay !== endDay && day > endDay)) {
+      setStartDay(day);
+      setEndDay(day);
+    } else {
+      setEndDay(day);
+    }
+  };
+
+  const handleApplyRange = () => {
+    setSelectedRange(`May ${startDay} – May ${endDay}, 2024`);
+    setShowCalendar(false);
+  };
+
+  const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
+
   return (
-    <div className="space-y-6 font-sans">
+    <div className="space-y-6 font-sans relative">
       {/* Top Header & Date Filter */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-20">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
             Welcome back, Atif! <span className="animate-bounce">👋</span>
@@ -36,11 +59,124 @@ export default function DashboardPage() {
           <p className="text-xs text-slate-500 font-medium mt-1">Here's what's happening with your Codentra projects today.</p>
         </div>
 
-        {/* Clickable Date Range Filter Dropdown */}
-        <div className="flex items-center space-x-2 bg-white border border-slate-200/80 px-4 py-2 rounded-2xl shadow-sm text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer self-start md:self-auto">
-          <Calendar className="w-4 h-4 text-slate-400" />
-          <span>May 20 – May 26, 2024</span>
-          <ChevronDown className="w-3.5 h-3.5 text-slate-400 ml-1" />
+        {/* Interactive Clickable Date Range Picker Button */}
+        <div className="relative">
+          <button
+            onClick={() => setShowCalendar(!showCalendar)}
+            className={`flex items-center space-x-2 bg-white border px-4 py-2.5 rounded-2xl shadow-sm text-xs font-semibold text-slate-800 hover:border-[#6366F1] transition-all cursor-pointer ${
+              showCalendar ? "border-[#6366F1] ring-2 ring-indigo-100" : "border-slate-200/80"
+            }`}
+          >
+            <CalendarIcon className="w-4 h-4 text-[#6366F1]" />
+            <span>{selectedRange}</span>
+            <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${showCalendar ? "rotate-180 text-[#6366F1]" : ""}`} />
+          </button>
+
+          {/* Interactive Calendar Popover Dropdown (Figma Exact Style) */}
+          {showCalendar && (
+            <div className="absolute right-0 top-12 w-80 md:w-96 bg-white border border-slate-200 rounded-3xl shadow-2xl p-5 z-50 animate-in fade-in slide-in-from-top-2 duration-200 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center space-x-2">
+                  <CalendarIcon className="w-4 h-4 text-[#6366F1]" />
+                  <span className="text-sm font-extrabold text-slate-900">Select Date Range</span>
+                </div>
+                <button
+                  onClick={() => setShowCalendar(false)}
+                  className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Preset Range Pills */}
+              <div className="flex flex-wrap gap-1.5 text-xs">
+                {["Today", "This Week", "This Month", "Last 30 Days"].map((preset) => (
+                  <button
+                    key={preset}
+                    onClick={() => {
+                      setActivePreset(preset);
+                      if (preset === "Today") { setStartDay(21); setEndDay(21); }
+                      else if (preset === "This Week") { setStartDay(20); setEndDay(26); }
+                      else if (preset === "This Month") { setStartDay(1); setEndDay(31); }
+                      else if (preset === "Last 30 Days") { setStartDay(1); setEndDay(30); }
+                    }}
+                    className={`px-3 py-1.5 rounded-xl font-semibold transition-all ${
+                      activePreset === preset
+                        ? "bg-[#6366F1] text-white shadow-sm"
+                        : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                    }`}
+                  >
+                    {preset}
+                  </button>
+                ))}
+              </div>
+
+              {/* Calendar Month Header */}
+              <div className="flex items-center justify-between pt-2">
+                <span className="text-xs font-extrabold text-slate-900">May 2024</span>
+                <div className="flex items-center space-x-1">
+                  <button className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Calendar Days Grid */}
+              <div className="space-y-1">
+                <div className="grid grid-cols-7 text-center text-[10px] font-bold text-slate-400 uppercase py-1">
+                  <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                </div>
+                <div className="grid grid-cols-7 gap-1 text-center text-xs">
+                  {daysInMonth.map((day) => {
+                    const isStart = day === startDay;
+                    const isEnd = day === endDay;
+                    const inRange = day >= startDay && day <= endDay;
+
+                    return (
+                      <button
+                        key={day}
+                        onClick={() => handleSelectDay(day)}
+                        className={`h-8 rounded-xl font-bold transition-all text-xs flex items-center justify-center ${
+                          isStart || isEnd
+                            ? "bg-[#6366F1] text-white shadow-md shadow-indigo-500/30"
+                            : inRange
+                            ? "bg-[#EEF2FF] text-[#6366F1]"
+                            : "text-slate-700 hover:bg-slate-100"
+                        }`}
+                      >
+                        {day}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                <span className="text-[11px] font-bold text-slate-500">
+                  May {startDay} – May {endDay}
+                </span>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setShowCalendar(false)}
+                    className="px-3 py-1.5 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleApplyRange}
+                    className="px-4 py-1.5 text-xs font-bold bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-xl shadow-md shadow-indigo-500/20 transition-all flex items-center space-x-1"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Apply</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -109,7 +245,7 @@ export default function DashboardPage() {
 
       {/* Middle Row (3 Widgets): Donut Chart + My Tasks + Recent Projects */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Project Progress Donut Widget (Exact Figma Styling) */}
+        {/* Project Progress Donut Widget */}
         <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
           <h3 className="text-base font-extrabold text-slate-900">Project Progress</h3>
           
@@ -157,7 +293,7 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        {/* My Tasks List Widget (Exact Figma Styling) */}
+        {/* My Tasks List Widget */}
         <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-base font-extrabold text-slate-900">My Tasks</h3>
@@ -189,7 +325,7 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        {/* Recent Projects Widget (Exact Figma Styling) */}
+        {/* Recent Projects Widget */}
         <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-base font-extrabold text-slate-900">Recent Projects</h3>
@@ -224,14 +360,13 @@ export default function DashboardPage() {
 
       {/* Bottom Row (2 Widgets): Activity Overview Curve Chart + Latest Activities */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Activity Overview Spline Area Chart (Exact Figma Styling) */}
+        {/* Activity Overview Spline Area Chart */}
         <div className="lg:col-span-2 bg-white border border-slate-100 rounded-3xl p-6 shadow-sm space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-base font-extrabold text-slate-900">Activity Overview</h3>
             <span className="text-xs font-bold text-slate-400">Weekly Performance</span>
           </div>
 
-          {/* SVG Smooth Curve Area Chart */}
           <div className="w-full h-56 relative pt-4">
             <svg className="w-full h-full overflow-visible" viewBox="0 0 500 180">
               <defs>
@@ -241,26 +376,22 @@ export default function DashboardPage() {
                 </linearGradient>
               </defs>
 
-              {/* Y-Axis Grid Lines */}
               <line x1="40" y1="20" x2="480" y2="20" stroke="#F1F5F9" strokeWidth="1" />
               <line x1="40" y1="60" x2="480" y2="60" stroke="#F1F5F9" strokeWidth="1" />
               <line x1="40" y1="100" x2="480" y2="100" stroke="#F1F5F9" strokeWidth="1" />
               <line x1="40" y1="140" x2="480" y2="140" stroke="#F1F5F9" strokeWidth="1" />
 
-              {/* Y-Axis Text */}
               <text x="15" y="24" fill="#94A3B8" fontSize="10" fontWeight="bold">100</text>
               <text x="15" y="64" fill="#94A3B8" fontSize="10" fontWeight="bold">80</text>
               <text x="15" y="104" fill="#94A3B8" fontSize="10" fontWeight="bold">60</text>
               <text x="15" y="144" fill="#94A3B8" fontSize="10" fontWeight="bold">40</text>
               <text x="25" y="174" fill="#94A3B8" fontSize="10" fontWeight="bold">0</text>
 
-              {/* Filled Area Under Curve */}
               <path
                 d="M 60 150 Q 130 110, 200 120 T 340 50 T 480 150 L 480 160 L 60 160 Z"
                 fill="url(#areaGradient)"
               />
 
-              {/* Smooth Curve Line */}
               <path
                 d="M 60 150 Q 130 110, 200 120 T 340 50 T 480 150"
                 fill="none"
@@ -269,7 +400,6 @@ export default function DashboardPage() {
                 strokeLinecap="round"
               />
 
-              {/* Data Points Dots */}
               <circle cx="60" cy="150" r="5" fill="#6366F1" stroke="#FFFFFF" strokeWidth="2" />
               <circle cx="130" cy="110" r="5" fill="#6366F1" stroke="#FFFFFF" strokeWidth="2" />
               <circle cx="200" cy="120" r="5" fill="#6366F1" stroke="#FFFFFF" strokeWidth="2" />
@@ -279,7 +409,6 @@ export default function DashboardPage() {
               <circle cx="480" cy="150" r="5" fill="#6366F1" stroke="#FFFFFF" strokeWidth="2" />
             </svg>
 
-            {/* X-Axis Labels */}
             <div className="flex justify-between pl-10 pr-4 text-[11px] font-bold text-slate-400 mt-2">
               <span>Mon</span>
               <span>Tue</span>
@@ -292,7 +421,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Latest Activities Timeline Widget (Exact Figma Styling) */}
+        {/* Latest Activities Timeline Widget */}
         <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-base font-extrabold text-slate-900">Latest Activities</h3>

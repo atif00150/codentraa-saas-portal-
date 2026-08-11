@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODENTRAA — Master Business Proposal & Developer Blueprint</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1D4ED8;
+            --secondary: #0F172A;
+            --accent: #0EA5E9;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --bg-light: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 40px;
+            font-size: 13px;
+        }
+
+        /* Page Layout for Print */
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        /* Header / Cover Banner */
+        .cover-header {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #2563EB 100%);
+            color: white;
+            padding: 36px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover-header::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(14, 165, 233, 0.15);
+            border-radius: 50%;
+        }
+
+        .brand-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            color: #38BDF8;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .cover-title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .cover-subtitle {
+            font-size: 14px;
+            color: #94A3B8;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 11px;
+        }
+
+        .meta-item span {
+            display: block;
+            color: #94A3B8;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .meta-item strong {
+            color: white;
+            font-weight: 600;
+        }
+
+        /* KPI Metric Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .kpi-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Section Styling */
+        .section {
+            margin-bottom: 36px;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #F1F5F9;
+            padding-bottom: 8px;
+        }
+
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            background: #EFF6FF;
+            color: var(--primary);
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        th {
+            background: #F1F5F9;
+            color: var(--secondary);
+            text-align: left;
+            padding: 10px 14px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: #334155;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background: #FAFAFA;
+        }
+
+        /* Badges & Tags */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-warning { background: #FEF3C7; color: #92400E; }
+        .badge-danger { background: #FEE2E2; color: #991B1B; }
+        .badge-info { background: #DBEAFE; color: #1E40AF; }
+        .badge-purple { background: #F3E8FF; color: #6B21A8; }
+
+        /* Method Badges for API */
+        .method {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        .get { background: #DBEAFE; color: #1D4ED8; }
+        .post { background: #D1FAE5; color: #047857; }
+        .patch { background: #FEF3C7; color: #B45309; }
+        .delete { background: #FEE2E2; color: #B91C1C; }
+
+        /* Architecture Flow Diagram Box */
+        .arch-box {
+            background: #0F172A;
+            color: #F8FAFC;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 11px;
+            line-height: 1.8;
+            margin-top: 12px;
+            border: 1px solid #1E293B;
+        }
+
+        .arch-layer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1E293B;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .arch-layer-title {
+            font-weight: 600;
+            color: #38BDF8;
+        }
+
+        .arch-layer-desc {
+            color: #94A3B8;
+            font-size: 10px;
+        }
+
+        /* Database Entity Cards */
+        .entity-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .entity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .entity-name {
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 14px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Callout Box */
+        .callout {
+            background: #EFF6FF;
+            border-left: 4px solid var(--primary);
+            padding: 14px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            font-size: 12px;
+            color: #1E40AF;
+        }
+
+        .callout-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Timeline / Sprint Cards */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+            margin-top: 16px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 4px;
+            bottom: 4px;
+            width: 2px;
+            background: #E2E8F0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--primary);
+        }
+
+        .timeline-title {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--secondary);
+        }
+
+        .timeline-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- COVER HEADER -->
+    <div class="cover-header">
+        <div class="brand-badge">SaaS Technical Specification & Pitch Deck</div>
+        <div class="cover-title">CODENTRAA PORTAL</div>
+        <div class="cover-subtitle">Enterprise Multi-Tenant Project & Team Management SaaS Platform — Master Technical Proposal & Developer Blueprint</div>
+        
+        <div class="meta-grid">
+            <div class="meta-item">
+                <span>Version</span>
+                <strong>1.0.0 (Production)</strong>
+            </div>
+            <div class="meta-item">
+                <span>Prepared By</span>
+                <strong>Lead Solutions Architect</strong>
+            </div>
+            <div class="meta-item">
+                <span>Target Stack</span>
+                <strong>Next.js 14 + ASP.NET Core 8</strong>
+            </div>
+            <div class="meta-item">
+                <span>Status</span>
+                <strong>Ready for Implementation</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI METRICS GRID -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-value">100%</div>
+            <div class="kpi-label">Tenant Isolation Guard</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value">6 Layers</div>
+            <div class="kpi-label">Clean Onion Architecture</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value">REST + WS</div>
+            <div class="kpi-label">SignalR Realtime Engine</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value">3 Tiers</div>
+            <div class="kpi-label">SaaS Monetization Model</div>
+        </div>
+    </div>
+
+    <!-- SECTION 1: EXECUTIVE SUMMARY -->
+    <div class="section">
+        <div class="section-title">
+            <span class="section-icon">01</span> Executive Summary & Product Vision
+        </div>
+        <p><strong>Codentraa</strong> is a high-performance, multi-tenant SaaS application designed for organizations, digital agencies, and software development teams to manage workspaces, projects, tasks, file attachments, and real-time team collaboration with complete data privacy.</p>
+        
+        <div class="callout">
+            <div class="callout-title">💡 Core Value Proposition</div>
+            Strict logical multi-tenant isolation ensures zero cross-organization data leakage while giving enterprise clients high-speed Next.js SSR interfaces powered by a robust C# ASP.NET Core Web API backend.
+        </div>
+
+        <h4 style="margin-top: 16px; margin-bottom: 8px;">Subscription Tier Structure & Monetization Strategy</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Feature / Metric</th>
+                    <th>Free Tier</th>
+                    <th>Pro Tier ($29/mo)</th>
+                    <th>Enterprise Tier ($99/mo)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Max Workspaces</strong></td>
+                    <td>1 Organization</td>
+                    <td>3 Organizations</td>
+                    <td><span class="badge badge-success">Unlimited</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Team Members</strong></td>
+                    <td>Up to 5 Users</td>
+                    <td>Up to 50 Users</td>
+                    <td><span class="badge badge-success">Unlimited</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Active Projects</strong></td>
+                    <td>3 Projects</td>
+                    <td>25 Projects</td>
+                    <td><span class="badge badge-success">Unlimited</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Storage Limit</strong></td>
+                    <td>500 MB</td>
+                    <td>50 GB (S3 Cloud)</td>
+                    <td><span class="badge badge-purple">1 TB Dedicated</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Security & Audit</strong></td>
+                    <td>Basic Logging</td>
+                    <td>Advanced Audit Logs</td>
+                    <td><span class="badge badge-info">Full Audit + Custom SLA</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SECTION 2: RBAC MATRIX -->
+    <div class="section">
+        <div class="section-title">
+            <span class="section-icon">02</span> Role-Based Access Control (RBAC) Permission Matrix
+        </div>
+        <p>The system enforces strict permission boundaries across 5 organizational roles:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>System Action / Capability</th>
+                    <th>Owner</th>
+                    <th>Admin</th>
+                    <th>Manager</th>
+                    <th>Developer</th>
+                    <th>Client</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Manage SaaS Billing & Subscription</strong></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-danger">Restricted</span></td>
+                    <td><span class="badge badge-danger">Restricted</span></td>
+                    <td><span class="badge badge-danger">Restricted</span></td>
+                    <td><span class="badge badge-danger">Restricted</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Invite / Remove Team Members</strong></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-danger">Restricted</span></td>
+                    <td><span class="badge badge-danger">Restricted</span></td>
+                    <td><span class="badge badge-danger">Restricted</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Create & Archive Projects</strong></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-danger">Restricted</span></td>
+                    <td><span class="badge badge-danger">Restricted</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Create & Assign Tasks</strong></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-danger">Restricted</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Update Task Status & Comment</strong></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-success">Granted</span></td>
+                    <td><span class="badge badge-info">View & Comment Only</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SECTION 3: SYSTEM ARCHITECTURE -->
+    <div class="section">
+        <div class="section-title">
+            <span class="section-icon">03</span> Clean Architecture & High-Level System Design
+        </div>
+
+        <p>Codentraa uses a 6-layer Clean Onion Architecture for the backend, enforcing complete separation of concerns and testability.</p>
+
+        <div class="arch-box">
+            <div class="arch-layer">
+                <span class="arch-layer-title">1. Presentation Layer</span>
+                <span class="arch-layer-desc">Next.js 14 App Router, React Server Components, Zustand State, Tailwind CSS</span>
+            </div>
+            <div class="arch-layer">
+                <span class="arch-layer-title">2. API Boundary Layer</span>
+                <span class="arch-layer-desc">ASP.NET Core Controllers, Swagger / OpenAPI, CORS Policy, Rate Limiting</span>
+            </div>
+            <div class="arch-layer">
+                <span class="arch-layer-title">3. Application / Business Logic</span>
+                <span class="arch-layer-desc">MediatR CQRS Commands & Queries, FluentValidation, AutoMapper DTOs</span>
+            </div>
+            <div class="arch-layer">
+                <span class="arch-layer-title">4. Multi-Tenant Data Layer</span>
+                <span class="arch-layer-desc">Entity Framework Core 8, TenantDbContextInterceptor (Global Query Filters)</span>
+            </div>
+            <div class="arch-layer">
+                <span class="arch-layer-title">5. Database Layer</span>
+                <span class="arch-layer-desc">SQL Server 2022 (Relational Data, Indexing, Auto-Sequences)</span>
+            </div>
+            <div class="arch-layer">
+                <span class="arch-layer-title">6. Infrastructure Services</span>
+                <span class="arch-layer-desc">ASP.NET Core SignalR (WebSockets), AWS S3 Upload Pre-Signed URLs, SendGrid Mail</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4: PRODUCTION DATABASE SCHEMA -->
+    <div class="section">
+        <div class="section-title">
+            <span class="section-icon">04</span> Production Database Schema & ERD Specifications
+        </div>
+
+        <!-- Entity Card: Users -->
+        <div class="entity-card">
+            <div class="entity-header">
+                <span class="entity-name">Table: Users</span>
+                <span class="badge badge-info">Authentication Core</span>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Column Name</th><th>Data Type</th><th>Key / Constraint</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>Id</code></td><td>UNIQUEIDENTIFIER</td><td><span class="badge badge-purple">PRIMARY KEY</span></td><td>Default NEWSEQUENTIALID()</td></tr>
+                    <tr><td><code>Email</code></td><td>NVARCHAR(256)</td><td><span class="badge badge-warning">UNIQUE, NOT NULL</span></td><td>User login email address</td></tr>
+                    <tr><td><code>PasswordHash</code></td><td>NVARCHAR(MAX)</td><td>NOT NULL</td><td>BCrypt / Argon2 Hashed Password</td></tr>
+                    <tr><td><code>FirstName / LastName</code></td><td>NVARCHAR(100)</td><td>NOT NULL</td><td>Full user display profile</td></tr>
+                    <tr><td><code>IsEmailVerified</code></td><td>BIT</td><td>DEFAULT 0</td><td>Email verification state</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Entity Card: Organizations -->
+        <div class="entity-card">
+            <div class="entity-header">
+                <span class="entity-name">Table: Organizations</span>
+                <span class="badge badge-success">Tenant Root</span>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Column Name</th><th>Data Type</th><th>Key / Constraint</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>Id</code></td><td>UNIQUEIDENTIFIER</td><td><span class="badge badge-purple">PRIMARY KEY</span></td><td>Tenant Identifier GUID</td></tr>
+                    <tr><td><code>Name</code></td><td>NVARCHAR(150)</td><td>NOT NULL</td><td>Workspace Name (e.g., Acme Corp)</td></tr>
+                    <tr><td><code>Slug</code></td><td>NVARCHAR(100)</td><td><span class="badge badge-warning">UNIQUE</span></td><td>URL-friendly identifier</td></tr>
+                    <tr><td><code>OwnerId</code></td><td>UNIQUEIDENTIFIER</td><td><span class="badge badge-info">FK -> Users.Id</span></td><td>Organization Owner User GUID</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Entity Card: Tasks -->
+        <div class="entity-card">
+            <div class="entity-header">
+                <span class="entity-name">Table: Tasks</span>
+                <span class="badge badge-warning">Project Work Items</span>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Column Name</th><th>Data Type</th><th>Key / Constraint</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>Id</code></td><td>UNIQUEIDENTIFIER</td><td><span class="badge badge-purple">PRIMARY KEY</span></td><td>Task GUID</td></tr>
+                    <tr><td><code>OrganizationId</code></td><td>UNIQUEIDENTIFIER</td><td><span class="badge badge-danger">FK (Tenant Isolation)</span></td><td>Required for Tenant Filter</td></tr>
+                    <tr><td><code>ProjectId</code></td><td>UNIQUEIDENTIFIER</td><td><span class="badge badge-info">FK -> Projects.Id</span></td><td>Parent Project GUID</td></tr>
+                    <tr><td><code>Title</code></td><td>NVARCHAR(300)</td><td>NOT NULL</td><td>Task summary title</td></tr>
+                    <tr><td><code>Status</code></td><td>NVARCHAR(50)</td><td>DEFAULT 'Backlog'</td><td>Backlog, Todo, InProgress, Review, Done</td></tr>
+                    <tr><td><code>Priority</code></td><td>NVARCHAR(50)</td><td>DEFAULT 'Medium'</td><td>Low, Medium, High, Urgent</td></tr>
+                    <tr><td><code>AssigneeId</code></td><td>UNIQUEIDENTIFIER</td><td>FK -> Users.Id (NULL)</td><td>Assigned Developer</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SECTION 5: REST API ENDPOINT CONTRACTS -->
+    <div class="section">
+        <div class="section-title">
+            <span class="section-icon">05</span> REST API Specification & Endpoint Contracts
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>HTTP Method</th>
+                    <th>Endpoint URL</th>
+                    <th>Auth Required</th>
+                    <th>Description / Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="method post">POST</span></td>
+                    <td><code>/api/v1/auth/register</code></td>
+                    <td><span class="badge badge-warning">Public</span></td>
+                    <td>Register new user account</td>
+                </tr>
+                <tr>
+                    <td><span class="method post">POST</span></td>
+                    <td><code>/api/v1/auth/login</code></td>
+                    <td><span class="badge badge-warning">Public</span></td>
+                    <td>Returns JWT Access Token & Refresh Cookie</td>
+                </tr>
+                <tr>
+                    <td><span class="method get">GET</span></td>
+                    <td><code>/api/v1/organizations</code></td>
+                    <td><span class="badge badge-success">Bearer JWT</span></td>
+                    <td>List workspaces owned/joined by user</td>
+                </tr>
+                <tr>
+                    <td><span class="method post">POST</span></td>
+                    <td><code>/api/v1/organizations/{id}/members/invite</code></td>
+                    <td><span class="badge badge-success">Bearer JWT</span></td>
+                    <td>Send team invite email with role token</td>
+                </tr>
+                <tr>
+                    <td><span class="method get">GET</span></td>
+                    <td><code>/api/v1/projects/{projId}/tasks</code></td>
+                    <td><span class="badge badge-success">Bearer JWT</span></td>
+                    <td>Get tasks for project (Paginated/Filtered)</td>
+                </tr>
+                <tr>
+                    <td><span class="method patch">PATCH</span></td>
+                    <td><code>/api/v1/tasks/{taskId}/status</code></td>
+                    <td><span class="badge badge-success">Bearer JWT</span></td>
+                    <td>Update task status (Triggers SignalR WebSockets)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SECTION 6: ACTION PLAN / ROADMAP -->
+    <div class="section">
+        <div class="section-title">
+            <span class="section-icon">06</span> Senior Developer Action Roadmap & Execution Plan
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-title">Sprint 1: Solution Infrastructure & Database Foundation</div>
+                <div class="timeline-desc">Initialize ASP.NET Core Clean Architecture `.sln`, configure EF Core DbContext, implement `TenantDbContextInterceptor`, and apply SQL migrations.</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-title">Sprint 2: Authentication & Tenant Resolution Engine</div>
+                <div class="timeline-desc">Build JWT Auth Handler, Refresh token rotation, and `TenantResolutionMiddleware` to auto-bind `X-Organization-Id` to requests.</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-title">Sprint 3: Projects & Task Engine with State Machine Validation</div>
+                <div class="timeline-desc">Implement MediatR Commands/Queries for Task CRUD, status state machine validators, and AWS S3 pre-signed upload URL generation.</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-title">Sprint 4: Next.js 14 Frontend UI & Drag-and-Drop Kanban</div>
+                <div class="timeline-desc">Build App Router pages, Sidebar Layout, Interactive Drag-and-Drop Kanban Board with `@hello-pangea/dnd`, and integrate SignalR real-time client.</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-title">Sprint 5: Executive Dashboard, Stripe Subscriptions & Deployment</div>
+                <div class="timeline-desc">Construct metrics charts, integrate Stripe subscription webhooks, create Docker Compose scripts, and deploy to production environment.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div>Codentraa Enterprise SaaS Technical Specification</div>
+        <div>Confidential & Proprietary — Page 1 of 1 (Master Pitch Deck)</div>
+    </div>
+
+</div>
+
+</body>
+</html>

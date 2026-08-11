@@ -21,13 +21,13 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 bg-[#0F172A] border-r border-slate-800 flex flex-col h-screen sticky top-0 shrink-0 select-none">
-      {/* Brand Header with Figma Logo */}
-      <div className="p-6">
-        <Logo size="md" variant="dark" />
+      {/* Seamless White Header Logo Container (Matching Top Header Height & White Background) */}
+      <div className="h-16 bg-white border-b border-slate-200 border-r border-slate-200 px-6 flex items-center shrink-0">
+        <Logo size="md" variant="light" />
       </div>
 
       {/* Navigation Menu */}
-      <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto">
+      <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto">
         {navigation.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));

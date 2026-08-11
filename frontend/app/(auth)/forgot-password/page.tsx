@@ -6,7 +6,7 @@ import { Mail, Send, Lock, Info, ArrowLeft, ShieldCheck, Zap, Users, CheckCircle
 import Logo from "@/components/ui/Logo";
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("test@codentraa.com");
+  const [email, setEmail] = useState(""); // Empty by default
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -49,19 +49,14 @@ export default function ForgotPasswordPage() {
           </div>
 
           <div className="space-y-5">
-            {/* Lock Icon Badge & Heading */}
-            <div className="space-y-3">
-              <div className="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center justify-center text-[#6366F1]">
-                <Lock className="w-6 h-6" />
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
-                  Reset Your Password
-                </h1>
-                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
-                  Enter your registered email address and we'll send you a link to reset your password.
-                </p>
-              </div>
+            {/* Heading without Lock Icon */}
+            <div>
+              <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+                Reset Your Password
+              </h1>
+              <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
+                Enter your registered email address and we'll send you a link to reset your password.
+              </p>
             </div>
 
             {error && (
@@ -88,7 +83,7 @@ export default function ForgotPasswordPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@codentra.com"
+                    placeholder="Enter your email address"
                     className="w-full bg-slate-50/60 border border-slate-200 text-sm text-slate-900 rounded-xl pl-10 pr-4 py-3 placeholder:text-slate-400 focus:outline-none focus:border-[#6366F1] focus:bg-white transition-all"
                   />
                 </div>
@@ -124,14 +119,15 @@ export default function ForgotPasswordPage() {
               <div className="flex-grow border-t border-slate-200"></div>
             </div>
 
-            {/* Back to Sign In Link */}
-            <div className="flex items-center space-x-2 text-xs">
-              <ArrowLeft className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-slate-500 font-medium">Back to</span>
-              <Link href="/login" className="text-[#6366F1] font-bold hover:underline">
-                Sign In
-              </Link>
-            </div>
+            {/* Entire Row Clickable Back to Sign In Link */}
+            <Link
+              href="/login"
+              className="inline-flex items-center space-x-2 text-xs group cursor-pointer hover:underline"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#6366F1] transition-colors" />
+              <span className="text-slate-500 font-medium group-hover:text-slate-700">Back to</span>
+              <span className="text-[#6366F1] font-bold">Sign In</span>
+            </Link>
           </div>
         </div>
 

@@ -3,9 +3,16 @@ import React from "react";
 interface LogoProps {
   size?: "sm" | "md" | "lg";
   variant?: "light" | "dark";
+  showText?: boolean;
 }
 
-export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
+export default function Logo({ size = "md", variant = "dark", showText = true }: LogoProps) {
+  const iconSizes = {
+    sm: "w-8 h-8",
+    md: "w-10 h-10",
+    lg: "w-12 h-12",
+  };
+
   const textSizes = {
     sm: "text-lg",
     md: "text-xl",
@@ -13,11 +20,22 @@ export default function Logo({ size = "md", variant = "dark" }: LogoProps) {
   };
 
   return (
-    <div className="flex items-center select-none">
-      {/* Clean Bold Typographic Brand Name: "Codentra" */}
-      <span className={`font-extrabold tracking-tight ${textSizes[size]} ${variant === "dark" ? "text-white" : "text-slate-900"}`}>
-        Codentra
-      </span>
+    <div className="flex items-center space-x-3 select-none">
+      {/* Exact User Uploaded PNG Logo Image File */}
+      <div className={`${iconSizes[size]} shrink-0 flex items-center justify-center`}>
+        <img
+          src="/logo.png"
+          alt="Codentra Logo"
+          className="w-full h-full object-contain filter drop-shadow-sm"
+        />
+      </div>
+
+      {/* Bold Typographic Brand Name: "Codentra" */}
+      {showText && (
+        <span className={`font-extrabold tracking-tight ${textSizes[size]} ${variant === "dark" ? "text-white" : "text-slate-900"}`}>
+          Codentra
+        </span>
+      )}
     </div>
   );
 }

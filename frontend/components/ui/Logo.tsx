@@ -21,12 +21,12 @@ export default function Logo({ size = "md", variant = "dark", showText = true }:
 
   return (
     <div className="flex items-center space-x-3 select-none">
-      {/* Exact User Uploaded PNG Logo Image File */}
+      {/* 100% Transparent PNG Logo Image */}
       <div className={`${iconSizes[size]} shrink-0 flex items-center justify-center`}>
         <img
           src="/logo.png"
           alt="Codentra Logo"
-          className="w-full h-full object-contain filter drop-shadow-sm"
+          className={`w-full h-full object-contain ${variant === "dark" ? "brightness-200 invert" : ""}`}
         />
       </div>
 

@@ -19,18 +19,18 @@ export default function Logo({ size = "md", variant = "dark", showText = true }:
     lg: "text-2xl",
   };
 
-  const mainColor = variant === "dark" ? "#FFFFFF" : "#0F172A";
+  const rightColor = variant === "dark" ? "#FFFFFF" : "#0F172A";
 
   return (
     <div className="flex items-center space-x-3 select-none">
-      {/* Exact Hexagonal "C" Brand Logo Mark from User Image */}
+      {/* Exact Code Chevron Hexagon Logo Mark from User Image */}
       <div className={`${iconSizes[size]} shrink-0 transition-transform hover:scale-105`}>
         <svg viewBox="0 0 100 100" width="100%" height="100%" className="drop-shadow-sm">
-          {/* Left Accent Bracket (Vibrant Lime Green) */}
-          <path d="M22 28 L40 18 L40 32 L30 40 L30 60 L40 68 L40 82 L22 72 Z" fill="#9FE855" />
+          {/* Left Green Chevron (<) */}
+          <path d="M40 16 L20 28 L20 72 L40 84 L40 68 L32 62 L32 38 L40 32 Z" fill="#84CC16" />
           
-          {/* Right Hexagonal C Body */}
-          <path d="M46 15 L88 38 L88 62 L46 85 L46 68 L73 53 L73 47 L46 32 Z" fill={mainColor} />
+          {/* Right Dark Chevron (>) */}
+          <path d="M48 16 L88 50 L48 84 L48 68 L70 50 L48 32 Z" fill={rightColor} />
         </svg>
       </div>
 

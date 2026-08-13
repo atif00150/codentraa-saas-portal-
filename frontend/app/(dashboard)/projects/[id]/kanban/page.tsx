@@ -3,9 +3,24 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, Plus, FolderKanban, CheckCircle2, Clock, AlertCircle, Sparkles, ChevronRight, ChevronLeft, Radio } from "lucide-react";
+import {
+  ArrowLeft,
+  Plus,
+  FolderKanban,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  Sparkles,
+  ChevronRight,
+  ChevronLeft,
+  Radio,
+  X,
+  Check,
+  LayoutDashboard
+} from "lucide-react";
 import NotificationToast from "@/components/notifications/NotificationToast";
 import { getSignalRConnection } from "@/lib/signalr";
+import { INITIAL_PROJECTS, ProjectItem } from "@/lib/projectsData";
 
 interface Task {
   id: string;
@@ -15,17 +30,27 @@ interface Task {
   priority: "Low" | "Medium" | "High" | "Urgent";
 }
 
-const COLUMNS: { key: Task["status"]; label: string; badgeColor: string }[] = [
-  { key: "Backlog", label: "Backlog", badgeColor: "bg-slate-800 text-slate-300 border-slate-700" },
-  { key: "Todo", label: "To Do", badgeColor: "bg-blue-500/10 text-blue-400 border-blue-500/20" },
-  { key: "InProgress", label: "In Progress", badgeColor: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
-  { key: "Review", label: "In Review", badgeColor: "bg-purple-500/10 text-purple-400 border-purple-500/20" },
-  { key: "Done", label: "Completed", badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
+const COLUMNS: { key: Task["status"]; label: string; badgeBg: string; textColor: string }[] = [
+  { key: "Backlog", label: "Backlog", badgeBg: "bg-slate-100", textColor: "text-slate-700" },
+  { key: "Todo", label: "To Do", badgeBg: "bg-blue-50", textColor: "text-blue-700" },
+  { key: "InProgress", label: "In Progress", badgeBg: "bg-indigo-50", textColor: "text-[#6366F1]" },
+  { key: "Review", label: "In Review", badgeBg: "bg-purple-50", textColor: "text-purple-700" },
+  { key: "Done", label: "Completed", badgeBg: "bg-emerald-50", textColor: "text-emerald-700" },
 ];
 
 export default function KanbanBoardPage() {
   const params = useParams();
-  const projectId = params.id as string;
+  const projectId = (params.id as string) || "proj-101";
+
+  // Find matching project from dataset or fallback
+  const projectInfo =
+    INITIAL_PROJECTS.find((p) => p.id === projectId) || {
+      id: projectId,
+      name: "Acme SaaS Redesign",
+      category: "Web App",
+      status: "Active",
+      description: "Project Kanban Task Engine",
+    };
 
   const [tasks, setTasks] = useState<Task[]>([
     {
@@ -38,7 +63,7 @@ export default function KanbanBoardPage() {
     {
       id: "task-2",
       title: "Build Next.js App Router Sidebar Shell",
-      description: "Construct dark-mode sidebar layout with workspace switcher",
+      description: "Construct modern sidebar layout with workspace switcher",
       status: "Done",
       priority: "High",
     },
@@ -74,7 +99,7 @@ export default function KanbanBoardPage() {
   const [newPriority, setNewPriority] = useState<Task["priority"]>("Medium");
   const [newStatus, setNewStatus] = useState<Task["status"]>("Todo");
 
-  // SignalR WebSockets Real-Time Client Subscriptions
+  // SignalR WebSockets Subscriptions
   useEffect(() => {
     const connection = getSignalRConnection();
 
@@ -115,10 +140,12 @@ export default function KanbanBoardPage() {
       prev.map((t) => {
         if (t.id !== taskId) return t;
         const currentIndex = COLUMNS.findIndex((c) => c.key === t.status);
-        const newIndex = direction === "right" ? Math.min(currentIndex + 1, COLUMNS.length - 1) : Math.max(currentIndex - 1, 0);
+        const newIndex =
+          direction === "right"
+            ? Math.min(currentIndex + 1, COLUMNS.length - 1)
+            : Math.max(currentIndex - 1, 0);
         const nextStatus = COLUMNS[newIndex].key;
 
-        // Trigger SignalR WebSockets Broadcast
         try {
           const conn = getSignalRConnection();
           if (conn.state === "Connected") {
@@ -150,94 +177,130 @@ export default function KanbanBoardPage() {
     setShowModal(false);
   };
 
-  const getPriorityStyle = (priority: Task["priority"]) => {
+  const getPriorityBadge = (priority: Task["priority"]) => {
     switch (priority) {
       case "Urgent":
-        return "bg-red-500/20 text-red-400 border-red-500/30";
+        return "bg-red-50 text-red-600 border-red-100";
       case "High":
-        return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+        return "bg-amber-50 text-amber-700 border-amber-100";
       case "Medium":
-        return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+        return "bg-blue-50 text-blue-600 border-blue-100";
       case "Low":
-        return "bg-slate-800 text-slate-400 border-slate-700";
+        return "bg-slate-100 text-slate-600 border-slate-200";
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans pb-12">
       {/* Toast Alert */}
       {toastMessage && (
         <NotificationToast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
 
-      {/* Top Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Link
-            href="/projects"
-            className="p-2 text-slate-400 hover:text-white bg-slate-900 border border-slate-800 rounded-xl transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="bg-blue-500/10 text-blue-400 text-[10px] font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wider font-mono">
-                Project #{projectId.slice(0, 8)}
-              </span>
-              <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center space-x-1.5">
-                <Radio className="w-3 h-3 animate-pulse text-emerald-400" />
-                <span>WebSockets Real-Time Active</span>
-              </span>
+      {/* Top Breadcrumbs & Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          {/* Breadcrumb Links */}
+          <div className="flex items-center space-x-2 text-xs text-slate-500 font-semibold mb-1">
+            <Link href="/dashboard" className="hover:text-[#6366F1] flex items-center gap-1 cursor-pointer">
+              <LayoutDashboard className="w-3.5 h-3.5" />
+              <span>Dashboard</span>
+            </Link>
+            <span>/</span>
+            <Link href="/projects" className="hover:text-[#6366F1] cursor-pointer">
+              Projects
+            </Link>
+            <span>/</span>
+            <span className="text-slate-900 font-bold">{projectInfo.name}</span>
+          </div>
+
+          <div className="flex items-center space-x-3 mt-1">
+            <Link
+              href="/projects"
+              className="p-2 text-slate-500 hover:text-slate-900 bg-white border border-slate-200 rounded-2xl transition-all shadow-sm cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="bg-[#EEF2FF] text-[#6366F1] text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  {projectInfo.category}
+                </span>
+                <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center space-x-1.5 shadow-sm">
+                  <Radio className="w-3 h-3 animate-pulse text-emerald-500" />
+                  <span>WebSockets Real-Time Active</span>
+                </span>
+              </div>
+              <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight mt-0.5">
+                {projectInfo.name} — Kanban Engine
+              </h1>
             </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Interactive Kanban Task Engine</h1>
           </div>
         </div>
 
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl font-semibold text-sm flex items-center space-x-2 shadow-lg shadow-blue-600/25 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span>New Task</span>
-        </button>
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-[#6366F1] hover:bg-[#4F46E5] text-white px-4 py-2.5 rounded-2xl font-bold text-xs flex items-center space-x-2 shadow-md shadow-indigo-500/20 transition-all hover:scale-[1.02] cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Task</span>
+          </button>
+        </div>
       </div>
 
       {/* Task Creation Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl w-full max-w-md space-y-4 shadow-2xl">
-            <h2 className="text-lg font-bold text-white">Create Kanban Task</h2>
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-100 p-6 md:p-8 rounded-3xl w-full max-w-md space-y-4 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h2 className="text-lg font-extrabold text-slate-900">Create Kanban Task</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
             <form onSubmit={handleCreateTask} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Title</label>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                  Task Title *
+                </label>
                 <input
                   type="text"
                   required
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   placeholder="Task title..."
-                  className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500"
+                  className="w-full bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 rounded-2xl px-4 py-2.5 focus:outline-none focus:border-[#6366F1] transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Description</label>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                  Description
+                </label>
                 <textarea
                   rows={3}
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  placeholder="Task details..."
-                  className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500"
+                  placeholder="Task details and scope..."
+                  className="w-full bg-slate-50 border border-slate-200 text-xs font-medium text-slate-900 rounded-2xl px-4 py-2.5 focus:outline-none focus:border-[#6366F1] transition-all"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Priority</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    Priority
+                  </label>
                   <select
                     value={newPriority}
                     onChange={(e) => setNewPriority(e.target.value as any)}
-                    className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl px-3 py-2.5 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-50 border border-slate-200 text-xs font-bold text-slate-900 rounded-2xl px-3 py-2.5 focus:outline-none focus:border-[#6366F1] cursor-pointer"
                   >
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
@@ -247,11 +310,13 @@ export default function KanbanBoardPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Status Column</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    Status Column
+                  </label>
                   <select
                     value={newStatus}
                     onChange={(e) => setNewStatus(e.target.value as any)}
-                    className="w-full bg-slate-950 border border-slate-800 text-sm text-white rounded-xl px-3 py-2.5 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-50 border border-slate-200 text-xs font-bold text-slate-900 rounded-2xl px-3 py-2.5 focus:outline-none focus:border-[#6366F1] cursor-pointer"
                   >
                     <option value="Backlog">Backlog</option>
                     <option value="Todo">To Do</option>
@@ -262,19 +327,20 @@ export default function KanbanBoardPage() {
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3 pt-2">
+              <div className="flex justify-end space-x-3 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 text-sm text-slate-400 hover:text-white"
+                  className="px-4 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-xl"
+                  className="bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md shadow-indigo-500/20 transition-all cursor-pointer flex items-center space-x-1"
                 >
-                  Create Task
+                  <Check className="w-4 h-4" />
+                  <span>Create Task</span>
                 </button>
               </div>
             </form>
@@ -289,16 +355,16 @@ export default function KanbanBoardPage() {
           return (
             <div
               key={column.key}
-              className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 space-y-4 flex flex-col min-h-[500px]"
+              className="bg-white border border-slate-100 rounded-3xl p-4 space-y-4 flex flex-col min-h-[520px] shadow-sm"
             >
               {/* Column Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                <div className="flex items-center space-x-2">
-                  <span className={`text-xs font-bold px-2.5 py-1 rounded-lg border ${column.badgeColor}`}>
-                    {column.label}
-                  </span>
-                </div>
-                <span className="text-xs font-mono font-bold bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <span
+                  className={`text-xs font-extrabold px-3 py-1 rounded-xl ${column.badgeBg} ${column.textColor}`}
+                >
+                  {column.label}
+                </span>
+                <span className="text-xs font-mono font-extrabold bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full">
                   {columnTasks.length}
                 </span>
               </div>
@@ -306,43 +372,51 @@ export default function KanbanBoardPage() {
               {/* Tasks List */}
               <div className="flex-1 space-y-3">
                 {columnTasks.length === 0 ? (
-                  <div className="border border-dashed border-slate-800 rounded-xl p-4 text-center text-slate-600 text-xs">
+                  <div className="border border-dashed border-slate-200 rounded-2xl p-6 text-center text-slate-400 text-xs font-medium">
                     No tasks in {column.label}
                   </div>
                 ) : (
                   columnTasks.map((task) => (
                     <div
                       key={task.id}
-                      className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-3 hover:border-blue-500/40 transition-all shadow-md group"
+                      className="bg-slate-50/70 border border-slate-200/80 p-4 rounded-2xl space-y-3 hover:bg-white hover:shadow-md hover:border-indigo-200 transition-all group"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <h4 className="text-sm font-semibold text-white group-hover:text-blue-400 transition-colors">
+                        <h4 className="text-xs font-extrabold text-slate-900 group-hover:text-[#6366F1] transition-colors leading-snug">
                           {task.title}
                         </h4>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase shrink-0 ${getPriorityStyle(task.priority)}`}>
+                        <span
+                          className={`text-[9px] font-bold px-2 py-0.5 rounded-lg border uppercase shrink-0 ${getPriorityBadge(
+                            task.priority
+                          )}`}
+                        >
                           {task.priority}
                         </span>
                       </div>
 
                       {task.description && (
-                        <p className="text-xs text-slate-400 line-clamp-2">{task.description}</p>
+                        <p className="text-[11px] text-slate-500 font-medium line-clamp-2 leading-relaxed">
+                          {task.description}
+                        </p>
                       )}
 
                       {/* Transition Controls */}
-                      <div className="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs">
+                      <div className="flex items-center justify-between pt-2.5 border-t border-slate-200/60 text-xs">
                         <button
                           onClick={() => moveTask(task.id, "left")}
                           disabled={column.key === "Backlog"}
-                          className="p-1 text-slate-500 hover:text-white disabled:opacity-20 transition-colors"
+                          className="p-1 text-slate-400 hover:text-[#6366F1] disabled:opacity-20 transition-colors cursor-pointer"
                           title="Move Left"
                         >
                           <ChevronLeft className="w-4 h-4" />
                         </button>
-                        <span className="text-[10px] text-slate-500 font-mono">Move Status</span>
+                        <span className="text-[10px] text-slate-400 font-mono font-bold uppercase">
+                          Move
+                        </span>
                         <button
                           onClick={() => moveTask(task.id, "right")}
                           disabled={column.key === "Done"}
-                          className="p-1 text-slate-500 hover:text-white disabled:opacity-20 transition-colors"
+                          className="p-1 text-slate-400 hover:text-[#6366F1] disabled:opacity-20 transition-colors cursor-pointer"
                           title="Move Right"
                         >
                           <ChevronRight className="w-4 h-4" />

@@ -41,6 +41,9 @@ interface SidebarProps {
 export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [userName, setUserName] = useState("Atif Mughal");
+  const [userInitials, setUserInitials] = useState("AM");
+  const [userRole, setUserRole] = useState("Organization Owner");
 
   const updateCount = () => {
     const list = getStoredNotifications();
@@ -50,6 +53,30 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
   useEffect(() => {
     updateCount();
+
+    // Read Dynamic User Data from LocalStorage
+    try {
+      const storedUserRaw = localStorage.getItem("codentraa_user");
+      if (storedUserRaw) {
+        const parsed = JSON.parse(storedUserRaw);
+        const name = parsed.name || parsed.fullName || parsed.userEmail?.split("@")[0] || "Atif Mughal";
+        setUserName(name);
+        
+        const initials = name
+          .split(" ")
+          .map((part: string) => part[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 2) || "AM";
+        setUserInitials(initials);
+
+        if (parsed.role) {
+          setUserRole(parsed.role === "Owner" ? "Organization Owner" : `${parsed.role} Role`);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
 
     const handleUpdate = () => updateCount();
     window.addEventListener("notifications-updated", handleUpdate);
@@ -69,7 +96,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile Dark Overlay Backdrop (Closed by default on mobile/tablet) */}
+      {/* Mobile Dark Overlay Backdrop */}
       {isOpen && (
         <div
           onClick={onClose}
@@ -77,7 +104,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         />
       )}
 
-      {/* Sidebar Container: Desktop Sticky Sidebar + Mobile/iPad Sliding Drawer */}
+      {/* Sidebar Container */}
       <aside
         className={`w-64 bg-white border-r border-[#E2E8F0] flex flex-col h-screen fixed lg:sticky top-0 left-0 z-50 shrink-0 select-none font-sans text-[#0F172A] transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full lg:translate-x-0"
@@ -134,20 +161,20 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
           })}
         </nav>
 
-        {/* User Profile Section */}
+        {/* Dynamic Logged-In User Profile Section */}
         <div className="px-3 pb-2">
           <Link
             href="/settings"
             onClick={handleLinkClick}
             className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between hover:bg-[#EEF2FF] transition-colors cursor-pointer"
           >
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 min-w-0">
               <div className="w-8 h-8 rounded-full bg-[#4F46E5] text-white flex items-center justify-center font-extrabold text-xs shadow-sm shrink-0">
-                AM
+                {userInitials}
               </div>
               <div className="flex-1 truncate">
-                <h4 className="text-xs font-bold text-[#0F172A] truncate">Atif Mughal</h4>
-                <p className="text-[10px] text-[#64748B] font-medium truncate">Organization Owner</p>
+                <h4 className="text-xs font-bold text-[#0F172A] truncate">{userName}</h4>
+                <p className="text-[10px] text-[#64748B] font-medium truncate">{userRole}</p>
               </div>
             </div>
             <ChevronDown className="w-3.5 h-3.5 text-[#64748B] shrink-0" />

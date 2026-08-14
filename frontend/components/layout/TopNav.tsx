@@ -11,6 +11,9 @@ interface TopNavProps {
 
 export default function TopNav({ onMenuToggle }: TopNavProps) {
   const [unreadCount, setUnreadCount] = useState(0);
+  const [userName, setUserName] = useState("Atif Mughal");
+  const [userInitials, setUserInitials] = useState("AM");
+  const [userRole, setUserRole] = useState("Owner");
 
   const updateCount = () => {
     const list = getStoredNotifications();
@@ -20,6 +23,30 @@ export default function TopNav({ onMenuToggle }: TopNavProps) {
 
   useEffect(() => {
     updateCount();
+
+    // Read Dynamic User Data from LocalStorage
+    try {
+      const storedUserRaw = localStorage.getItem("codentraa_user");
+      if (storedUserRaw) {
+        const parsed = JSON.parse(storedUserRaw);
+        const name = parsed.name || parsed.fullName || parsed.userEmail?.split("@")[0] || "Atif Mughal";
+        setUserName(name);
+        
+        const initials = name
+          .split(" ")
+          .map((part: string) => part[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 2) || "AM";
+        setUserInitials(initials);
+
+        if (parsed.role) {
+          setUserRole(parsed.role);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
 
     const handleUpdate = () => updateCount();
     window.addEventListener("notifications-updated", handleUpdate);
@@ -35,7 +62,7 @@ export default function TopNav({ onMenuToggle }: TopNavProps) {
     <header className="h-16 bg-white border-b border-[#E2E8F0] px-4 md:px-8 flex items-center justify-between sticky top-0 z-20 font-sans text-[#0F172A]">
       {/* Left Section: Mobile Menu Toggle + Search Field */}
       <div className="flex items-center space-x-3 flex-1 max-w-lg">
-        {/* Mobile Hamburger Toggle (Visible on Mobile/iPad < lg) */}
+        {/* Mobile Hamburger Toggle */}
         <button
           onClick={onMenuToggle}
           className="p-2 text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] rounded-xl lg:hidden transition-colors cursor-pointer border border-[#E2E8F0] shrink-0"
@@ -60,7 +87,7 @@ export default function TopNav({ onMenuToggle }: TopNavProps) {
 
       {/* Right Header: Status, Notifications & Profile */}
       <div className="flex items-center space-x-2 sm:space-x-4 shrink-0">
-        {/* Organization Status Pill (Hidden on tiny screens, visible on sm+) */}
+        {/* Organization Status Pill */}
         <Link
           href="/settings"
           className="hidden sm:flex items-center space-x-2 bg-[#ECFDF5] border border-[#A7F3D0] px-3 py-1.5 rounded-xl text-xs hover:bg-[#D1FAE5] transition-colors cursor-pointer group shadow-sm"
@@ -86,17 +113,17 @@ export default function TopNav({ onMenuToggle }: TopNavProps) {
           )}
         </Link>
 
-        {/* User Avatar & Profile Menu */}
+        {/* Dynamic Logged-In User Avatar & Profile Menu */}
         <Link
           href="/settings"
           className="flex items-center space-x-2 sm:space-x-3 pl-2 sm:pl-3 border-l border-[#E2E8F0] hover:opacity-90 transition-opacity cursor-pointer"
         >
           <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#4F46E5] text-white flex items-center justify-center font-extrabold text-xs shadow-sm shrink-0">
-            AM
+            {userInitials}
           </div>
           <div className="text-left hidden md:block">
-            <h4 className="text-xs font-bold text-[#0F172A] leading-tight">Atif Mughal</h4>
-            <span className="text-[10px] text-[#64748B] font-medium">Owner</span>
+            <h4 className="text-xs font-bold text-[#0F172A] leading-tight">{userName}</h4>
+            <span className="text-[10px] text-[#64748B] font-medium">{userRole}</span>
           </div>
         </Link>
       </div>

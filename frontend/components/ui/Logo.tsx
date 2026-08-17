@@ -1,22 +1,30 @@
 import React from "react";
+import Link from "next/link";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg";
   variant?: "light" | "dark";
   showText?: boolean;
+  subtitle?: string;
 }
 
-export default function Logo({ size = "md", variant = "dark", showText = true }: LogoProps) {
+export default function Logo({ size = "md", variant = "light", showText = true, subtitle }: LogoProps) {
   const textSizes = {
     sm: "text-lg",
     md: "text-2xl",
     lg: "text-3xl",
   };
 
+  const imageSizes = {
+    sm: "w-7 h-7",
+    md: "w-9 h-9",
+    lg: "w-11 h-11",
+  };
+
   return (
-    <div className="inline-flex items-center gap-1.5 select-none">
-      {/* Original Logo PNG Icon */}
-      <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 flex items-center justify-center">
+    <Link href="/" className="inline-flex items-center gap-2.5 select-none hover:opacity-95 transition-opacity group">
+      {/* Codentra Logo PNG */}
+      <div className={`${imageSizes[size]} shrink-0 flex items-center justify-center group-hover:scale-105 transition-transform`}>
         <img
           src="/logo.png"
           alt="Codentra Logo"
@@ -24,12 +32,21 @@ export default function Logo({ size = "md", variant = "dark", showText = true }:
         />
       </div>
 
-      {/* Codentra Text */}
+      {/* Codentra Brand Text */}
       {showText && (
-        <span className={`font-black tracking-tight leading-none ${textSizes[size]} ${variant === "dark" ? "text-white" : "text-slate-900"}`}>
-          Codentra
-        </span>
+        <div className="flex flex-col">
+          <div className="flex items-center gap-2">
+            <span className={`font-extrabold tracking-tight leading-none ${textSizes[size]} ${variant === "dark" ? "text-white" : "text-slate-900"}`}>
+              Codentra
+            </span>
+          </div>
+          {subtitle && (
+            <span className={`text-[11px] font-semibold -mt-0.5 ${variant === "dark" ? "text-slate-400" : "text-slate-500"}`}>
+              {subtitle}
+            </span>
+          )}
+        </div>
       )}
-    </div>
+    </Link>
   );
 }
